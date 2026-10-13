@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Machine learning based healthcare patient risk prediction for Diabetes, Heart Disease, Chronic Kidney Disease, and Liver Disease.">
+    <title>Healthcare Patient Risk Prediction | ML Risk Estimation</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Top Healthcare Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">⚕️</span>
+                <div class="brand-text">
+                    <span class="brand-title">HealthRisk AI</span>
+                    <span class="brand-subtitle">Clinical ML Estimation</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#assessment-section" class="nav-link active">Risk Assessment</a>
+                <a href="#performance-section" class="nav-link">Model Performance</a>
+                <a href="#overview-section" class="nav-link">Project Overview</a>
+                <a href="#tech-section" class="nav-link">Technology</a>
+            </nav>
+            <div class="nav-badge">
+                <span class="pulse-dot"></span> 4 Active Models
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-badge">Healthcare Machine Learning Platform</div>
+            <h1 class="hero-title">Healthcare Patient Risk Prediction</h1>
+            <p class="hero-subtitle">Machine Learning Based Healthcare Risk Estimation</p>
+            <p class="hero-intro">
+                This educational application uses machine learning models trained on real healthcare datasets to provide disease-specific risk estimates based on entered parameters.
+            </p>
+            <div class="quick-disclaimer-pill">
+                <span class="pill-icon">ℹ️</span> Educational ML estimate only — not a medical diagnosis.
+            </div>
+        </section>
+
+        <!-- Disease Selection & Assessment Section -->
+        <section id="assessment-section" class="assessment-container">
+            <div class="section-header">
+                <h2>Select Disease Assessment Module</h2>
+                <p>Choose one of the four machine learning clinical risk modules below to load its specific feature parameters.</p>
+            </div>
+
+            <!-- Four Disease Cards -->
+            <div class="disease-cards-grid">
+                <button type="button" class="disease-card active" data-disease="diabetes" id="card-diabetes">
+                    <div class="card-icon-wrapper blood-theme">🩸</div>
+                    <div class="card-content">
+                        <h3>Diabetes</h3>
+                        <p>Pima Indians Dataset &bull; Random Forest model evaluating glycemic, insulin, BMI, and metabolic indicators.</p>
+                        <span class="card-tag">8 Clinical Features</span>
+                    </div>
+                </button>
+
+                <button type="button" class="disease-card" data-disease="heart" id="card-heart">
+                    <div class="card-icon-wrapper heart-theme">❤️</div>
+                    <div class="card-content">
+                        <h3>Heart Disease</h3>
+                        <p>Cleveland Heart Dataset &bull; Random Forest model assessing coronary markers, ECG, blood pressure, and cholesterol.</p>
+                        <span class="card-tag">13 Clinical Features</span>
+                    </div>
+                </button>
+
+                <button type="button" class="disease-card" data-disease="kidney" id="card-kidney">
+                    <div class="card-icon-wrapper kidney-theme">🫘</div>
+                    <div class="card-content">
+                        <h3>Chronic Kidney Disease</h3>
+                        <p>UCI CKD Dataset &bull; Random Forest classifier analyzing renal function, urinalysis, hematology, and electrolytes.</p>
+                        <span class="card-tag">24 Clinical Features</span>
+                    </div>
+                </button>
+
+                <button type="button" class="disease-card" data-disease="liver" id="card-liver">
+                    <div class="card-icon-wrapper liver-theme">🫀</div>
+                    <div class="card-content">
+                        <h3>Liver Disease</h3>
+                        <p>Indian Liver Patient Dataset &bull; Logistic Regression evaluating bilirubin, liver enzymes, and protein ratios.</p>
+                        <span class="card-tag">10 Clinical Features</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Form Card Wrapper -->
+            <div class="form-result-wrapper">
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="active-disease-badge" id="active-disease-title">
+                            <span id="active-disease-icon">🩸</span>
+                            <span id="active-disease-text">Diabetes Risk Assessment</span>
+                        </div>
+                        <div class="sample-loader-buttons">
+                            <button type="button" class="btn-sample" id="btn-sample-normal" title="Fill normal range baseline values">
+                                Normal Sample
+                            </button>
+                            <button type="button" class="btn-sample" id="btn-sample-elevated" title="Fill elevated risk sample values">
+                                Elevated Risk Sample
+                            </button>
+                        </div>
+                    </div>
+
+                    <form id="prediction-form" novalidate>
+                        <input type="hidden" name="disease" id="selected-disease-input" value="diabetes">
+
+                        <!-- Patient Personalization (Display Only) -->
+                        <div class="patient-name-card">
+                            <label for="patient_name" class="input-label">
+                                <span class="label-title">Patient Name</span>
+                                <span class="label-hint">(Used strictly for personalized report display — not stored or used in ML modeling)</span>
+                            </label>
+                            <input type="text" id="patient_name" name="patient_name" class="form-input" placeholder="e.g., John Doe or Jane Smith" maxlength="80">
+                        </div>
+
+                        <!-- Dynamic Disease Parameter Containers (Only selected disease is shown) -->
+                        
+                        <!-- 1. DIABETES FIELDS -->
+                        <div class="disease-fields-group active" id="fields-diabetes">
+                            <div class="fields-grid">
+                                <div class="form-group">
+                                    <label for="diab_Pregnancies" class="input-label">Number of Pregnancies</label>
+                                    <input type="number" id="diab_Pregnancies" name="Pregnancies" class="form-input" min="0" max="20" step="1" value="2" required>
+                                    <span class="field-hint">Range: 0 – 20</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_Glucose" class="input-label">Glucose (mg/dL)</label>
+                                    <input type="number" id="diab_Glucose" name="Glucose" class="form-input" min="0" max="300" step="1" value="120" required>
+                                    <span class="field-hint">Plasma glucose (Normal fasting &lt; 100)</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_BloodPressure" class="input-label">Blood Pressure (mm Hg)</label>
+                                    <input type="number" id="diab_BloodPressure" name="BloodPressure" class="form-input" min="0" max="180" step="1" value="70" required>
+                                    <span class="field-hint">Diastolic pressure (Normal 60–80)</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_SkinThickness" class="input-label">Triceps Skin Fold (mm)</label>
+                                    <input type="number" id="diab_SkinThickness" name="SkinThickness" class="form-input" min="0" max="100" step="1" value="20" required>
+                                    <span class="field-hint">Triceps skin thickness</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_Insulin" class="input-label">2-Hour Serum Insulin (mu U/ml)</label>
+                                    <input type="number" id="diab_Insulin" name="Insulin" class="form-input" min="0" max="900" step="1" value="80" required>
+                                    <span class="field-hint">Normal fasting 16–166</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_BMI" class="input-label">Body Mass Index (BMI kg/m²)</label>
+                                    <input type="number" id="diab_BMI" name="BMI" class="form-input" min="10" max="70" step="0.1" value="26.5" required>
+                                    <span class="field-hint">Normal range 18.5 – 24.9</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_DiabetesPedigreeFunction" class="input-label">Diabetes Pedigree Function</label>
+                                    <input type="number" id="diab_DiabetesPedigreeFunction" name="DiabetesPedigreeFunction" class="form-input" min="0.01" max="2.5" step="0.01" value="0.45" required>
+                                    <span class="field-hint">Genetic risk score (0.07 – 2.42)</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diab_Age" class="input-label">Age (years)</label>
+                                    <input type="number" id="diab_Age" name="Age" class="form-input" min="1" max="120" step="1" value="35" required>
+                                    <span class="field-hint">Patient age in years</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. HEART DISEASE FIELDS -->
+                        <div class="disease-fields-group" id="fields-heart">
+                            <div class="fields-grid">
+                                <div class="form-group">
+                                    <label for="heart_age" class="input-label">Age (years)</label>
+                                    <input type="number" id="heart_age" name="age" class="form-input" min="1" max="120" step="1" value="55" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_sex" class="input-label">Sex</label>
+                                    <select id="heart_sex" name="sex" class="form-select">
+                                        <option value="1" selected>Male</option>
+                                        <option value="0">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_cp" class="input-label">Chest Pain Type</label>
+                                    <select id="heart_cp" name="cp" class="form-select">
+                                        <option value="0">0: Typical Angina</option>
+                                        <option value="1" selected>1: Atypical Angina</option>
+                                        <option value="2">2: Non-anginal Pain</option>
+                                        <option value="3">3: Asymptomatic</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_trestbps" class="input-label">Resting Blood Pressure (mm Hg)</label>
+                                    <input type="number" id="heart_trestbps" name="trestbps" class="form-input" min="60" max="240" step="1" value="130" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_chol" class="input-label">Serum Cholesterol (mg/dl)</label>
+                                    <input type="number" id="heart_chol" name="chol" class="form-input" min="100" max="600" step="1" value="230" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_fbs" class="input-label">Fasting Blood Sugar &gt; 120 mg/dl</label>
+                                    <select id="heart_fbs" name="fbs" class="form-select">
+                                        <option value="0" selected>0: No (&le; 120 mg/dl)</option>
+                                        <option value="1">1: Yes (&gt; 120 mg/dl)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_restecg" class="input-label">Resting ECG Results</label>
+                                    <select id="heart_restecg" name="restecg" class="form-select">
+                                        <option value="0" selected>0: Normal</option>
+                                        <option value="1">1: ST-T Wave Abnormality</option>
+                                        <option value="2">2: Left Ventricular Hypertrophy</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_thalach" class="input-label">Max Heart Rate Achieved (bpm)</label>
+                                    <input type="number" id="heart_thalach" name="thalach" class="form-input" min="60" max="230" step="1" value="150" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_exang" class="input-label">Exercise Induced Angina</label>
+                                    <select id="heart_exang" name="exang" class="form-select">
+                                        <option value="0" selected>0: No</option>
+                                        <option value="1">1: Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_oldpeak" class="input-label">ST Depression (Oldpeak)</label>
+                                    <input type="number" id="heart_oldpeak" name="oldpeak" class="form-input" min="0" max="10" step="0.1" value="1.0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_slope" class="input-label">Slope of Peak ST Segment</label>
+                                    <select id="heart_slope" name="slope" class="form-select">
+                                        <option value="0">0: Upsloping</option>
+                                        <option value="1" selected>1: Flat</option>
+                                        <option value="2">2: Downsloping</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_ca" class="input-label">Major Vessels Colored (0–4)</label>
+                                    <select id="heart_ca" name="ca" class="form-select">
+                                        <option value="0" selected>0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="heart_thal" class="input-label">Thalassemia Status</label>
+                                    <select id="heart_thal" name="thal" class="form-select">
+                                        <option value="1">1: Normal</option>
+                                        <option value="2" selected>2: Fixed Defect</option>
+                                        <option value="3">3: Reversible Defect</option>
+                                        <option value="0">0: Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. CHRONIC KIDNEY DISEASE FIELDS -->
+                        <div class="disease-fields-group" id="fields-kidney">
+                            <h4 class="fields-subheading">Numerical Clinical Measurements</h4>
+                            <div class="fields-grid">
+                                <div class="form-group">
+                                    <label for="kid_age" class="input-label">Age (years)</label>
+                                    <input type="number" id="kid_age" name="age" class="form-input" min="1" max="120" step="1" value="48" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_bp" class="input-label">Blood Pressure (mm Hg)</label>
+                                    <input type="number" id="kid_bp" name="bp" class="form-input" min="40" max="200" step="1" value="80" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_sg" class="input-label">Specific Gravity</label>
+                                    <select id="kid_sg" name="sg" class="form-select">
+                                        <option value="1.005">1.005</option>
+                                        <option value="1.010">1.010</option>
+                                        <option value="1.015">1.015</option>
+                                        <option value="1.020" selected>1.020</option>
+                                        <option value="1.025">1.025</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_al" class="input-label">Albumin (0–5)</label>
+                                    <select id="kid_al" name="al" class="form-select">
+                                        <option value="0" selected>0 (Normal)</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_su" class="input-label">Sugar (0–5)</label>
+                                    <select id="kid_su" name="su" class="form-select">
+                                        <option value="0" selected>0 (Normal)</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_bgr" class="input-label">Blood Glucose Random (mg/dl)</label>
+                                    <input type="number" id="kid_bgr" name="bgr" class="form-input" min="40" max="500" step="1" value="110" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_bu" class="input-label">Blood Urea (mg/dl)</label>
+                                    <input type="number" id="kid_bu" name="bu" class="form-input" min="5" max="400" step="0.1" value="35" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_sc" class="input-label">Serum Creatinine (mg/dl)</label>
+                                    <input type="number" id="kid_sc" name="sc" class="form-input" min="0.1" max="20" step="0.1" value="1.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_sod" class="input-label">Sodium (mEq/L)</label>
+                                    <input type="number" id="kid_sod" name="sod" class="form-input" min="100" max="180" step="0.1" value="138" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_pot" class="input-label">Potassium (mEq/L)</label>
+                                    <input type="number" id="kid_pot" name="pot" class="form-input" min="1" max="15" step="0.1" value="4.2" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_hemo" class="input-label">Hemoglobin (g/dl)</label>
+                                    <input type="number" id="kid_hemo" name="hemo" class="form-input" min="3" max="20" step="0.1" value="14.5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_pcv" class="input-label">Packed Cell Volume (%)</label>
+                                    <input type="number" id="kid_pcv" name="pcv" class="form-input" min="10" max="60" step="1" value="42" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_wc" class="input-label">White Blood Cell Count (/cumm)</label>
+                                    <input type="number" id="kid_wc" name="wc" class="form-input" min="1500" max="30000" step="100" value="7500" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_rc" class="input-label">Red Blood Cell Count (mill/cmm)</label>
+                                    <input type="number" id="kid_rc" name="rc" class="form-input" min="1" max="9" step="0.1" value="4.8" required>
+                                </div>
+                            </div>
+
+                            <h4 class="fields-subheading" style="margin-top: 1.5rem;">Urinalysis &amp; Systemic Markers</h4>
+                            <div class="fields-grid">
+                                <div class="form-group">
+                                    <label for="kid_rbc" class="input-label">Red Blood Cells</label>
+                                    <select id="kid_rbc" name="rbc" class="form-select">
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="abnormal">Abnormal</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_pc" class="input-label">Pus Cell</label>
+                                    <select id="kid_pc" name="pc" class="form-select">
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="abnormal">Abnormal</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_pcc" class="input-label">Pus Cell Clumps</label>
+                                    <select id="kid_pcc" name="pcc" class="form-select">
+                                        <option value="notpresent" selected>Not Present</option>
+                                        <option value="present">Present</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_ba" class="input-label">Bacteria</label>
+                                    <select id="kid_ba" name="ba" class="form-select">
+                                        <option value="notpresent" selected>Not Present</option>
+                                        <option value="present">Present</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_htn" class="input-label">Hypertension</label>
+                                    <select id="kid_htn" name="htn" class="form-select">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_dm" class="input-label">Diabetes Mellitus</label>
+                                    <select id="kid_dm" name="dm" class="form-select">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_cad" class="input-label">Coronary Artery Disease</label>
+                                    <select id="kid_cad" name="cad" class="form-select">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_appet" class="input-label">Appetite</label>
+                                    <select id="kid_appet" name="appet" class="form-select">
+                                        <option value="good" selected>Good</option>
+                                        <option value="poor">Poor</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_pe" class="input-label">Pedal Edema</label>
+                                    <select id="kid_pe" name="pe" class="form-select">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kid_ane" class="input-label">Anemia</label>
+                                    <select id="kid_ane" name="ane" class="form-select">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. LIVER DISEASE FIELDS -->
+                        <div class="disease-fields-group" id="fields-liver">
+                            <div class="fields-grid">
+                                <div class="form-group">
+                                    <label for="liv_Age" class="input-label">Age (years)</label>
+                                    <input type="number" id="liv_Age" name="Age" class="form-input" min="1" max="120" step="1" value="45" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Gender" class="input-label">Gender</label>
+                                    <select id="liv_Gender" name="Gender" class="form-select">
+                                        <option value="Male" selected>Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Total_Bilirubin" class="input-label">Total Bilirubin (mg/dL)</label>
+                                    <input type="number" id="liv_Total_Bilirubin" name="Total_Bilirubin" class="form-input" min="0.1" max="80" step="0.1" value="0.9" required>
+                                    <span class="field-hint">Normal: 0.1 – 1.2 mg/dL</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Direct_Bilirubin" class="input-label">Direct Bilirubin (mg/dL)</label>
+                                    <input type="number" id="liv_Direct_Bilirubin" name="Direct_Bilirubin" class="form-input" min="0.05" max="40" step="0.05" value="0.25" required>
+                                    <span class="field-hint">Normal: &lt; 0.3 mg/dL</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Alkaline_Phosphotase" class="input-label">Alkaline Phosphatase (IU/L)</label>
+                                    <input type="number" id="liv_Alkaline_Phosphotase" name="Alkaline_Phosphotase" class="form-input" min="20" max="2500" step="1" value="190" required>
+                                    <span class="field-hint">Normal: 44 – 147 IU/L</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Alamine_Aminotransferase" class="input-label">ALT / SGPT (IU/L)</label>
+                                    <input type="number" id="liv_Alamine_Aminotransferase" name="Alamine_Aminotransferase" class="form-input" min="5" max="2500" step="1" value="30" required>
+                                    <span class="field-hint">Normal: 7 – 56 IU/L</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Aspartate_Aminotransferase" class="input-label">AST / SGOT (IU/L)</label>
+                                    <input type="number" id="liv_Aspartate_Aminotransferase" name="Aspartate_Aminotransferase" class="form-input" min="5" max="5000" step="1" value="35" required>
+                                    <span class="field-hint">Normal: 10 – 40 IU/L</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Total_Protiens" class="input-label">Total Proteins (g/dL)</label>
+                                    <input type="number" id="liv_Total_Protiens" name="Total_Protiens" class="form-input" min="1" max="12" step="0.1" value="6.8" required>
+                                    <span class="field-hint">Normal: 6.0 – 8.3 g/dL</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Albumin" class="input-label">Albumin (g/dL)</label>
+                                    <input type="number" id="liv_Albumin" name="Albumin" class="form-input" min="0.5" max="8" step="0.1" value="3.6" required>
+                                    <span class="field-hint">Normal: 3.4 – 5.4 g/dL</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liv_Albumin_and_Globulin_Ratio" class="input-label">A/G Ratio</label>
+                                    <input type="number" id="liv_Albumin_and_Globulin_Ratio" name="Albumin_and_Globulin_Ratio" class="form-input" min="0.1" max="3.5" step="0.01" value="1.0" required>
+                                    <span class="field-hint">Normal: 0.8 – 2.0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error Message Banner -->
+                        <div id="form-error-banner" class="error-banner hidden" role="alert"></div>
+
+                        <!-- Action Submit Button -->
+                        <div class="form-actions">
+                            <button type="submit" id="predict-submit-btn" class="btn-primary">
+                                <span class="btn-spinner hidden" id="btn-spinner"></span>
+                                <span class="btn-text" id="btn-text">⚡ Predict Clinical Risk</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Prediction Result Card -->
+                <div class="result-card-container">
+                    <div id="result-placeholder" class="result-placeholder">
+                        <div class="placeholder-icon">📋</div>
+                        <h3>Awaiting Clinical Input</h3>
+                        <p>Complete the patient parameters and click <strong>Predict Clinical Risk</strong> to generate an ML-based evaluation.</p>
+                    </div>
+
+                    <div id="result-display" class="result-card hidden">
+                        <div class="result-header">
+                            <div class="result-header-left">
+                                <span class="result-tag" id="res-status-label">Educational ML Risk Estimate</span>
+                                <h3 id="res-patient-name">Patient: Jane Doe</h3>
+                                <p class="res-disease-subtitle" id="res-disease-name">Selected: Diabetes</p>
+                            </div>
+                            <div class="result-badge" id="res-risk-badge">Low Risk</div>
+                        </div>
+
+                        <div class="result-body">
+                            <div class="probability-box" id="res-probability-box">
+                                <div class="prob-header">
+                                    <span>Model-Estimated Probability</span>
+                                    <span class="prob-val" id="res-prob-val">28.4%</span>
+                                </div>
+                                <div class="prob-bar-track">
+                                    <div class="prob-bar-fill" id="res-prob-bar" style="width: 28.4%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="result-summary-box">
+                                <h4>Clinical ML Summary</h4>
+                                <p id="res-summary-text">Model prediction summary will appear here.</p>
+                            </div>
+
+                            <div class="result-meta-grid">
+                                <div class="meta-item">
+                                    <span class="meta-label">Model Architecture</span>
+                                    <span class="meta-value" id="res-algorithm">Random Forest</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Classification Output</span>
+                                    <span class="meta-value" id="res-raw-prediction">Class 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="result-disclaimer">
+                            <span class="disc-icon">⚠️</span>
+                            <span id="res-disclaimer">Educational ML estimate only — not a medical diagnosis.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actual Model Performance Section -->
+        <section id="performance-section" class="section-container">
+            <div class="section-header">
+                <h2>Actual Machine Learning Model Performance</h2>
+                <p>Metrics calculated from real test set evaluations on untouched train/test splits. No fabricated metrics.</p>
+            </div>
+
+            <div class="metrics-grid">
+                <!-- Diabetes Card -->
+                <div class="metric-card">
+                    <div class="metric-card-header">
+                        <span class="metric-icon">🩸</span>
+                        <div>
+                            <h3>Diabetes Model</h3>
+                            <span class="algo-pill">Random Forest Classifier</span>
+                        </div>
+                    </div>
+                    <div class="metric-stats">
+                        <div class="stat-row">
+                            <span class="stat-name">Accuracy</span>
+                            <span class="stat-num highlight">74.03%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Precision</span>
+                            <span class="stat-num">66.67%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Recall</span>
+                            <span class="stat-num">51.85%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">F1-Score</span>
+                            <span class="stat-num">0.5833</span>
+                        </div>
+                    </div>
+                    <div class="dataset-meta-tag">
+                        Dataset: 768 records &bull; Test Set: 154 samples
+                    </div>
+                </div>
+
+                <!-- Heart Disease Card -->
+                <div class="metric-card">
+                    <div class="metric-card-header">
+                        <span class="metric-icon">❤️</span>
+                        <div>
+                            <h3>Heart Disease Model</h3>
+                            <span class="algo-pill">Random Forest Classifier</span>
+                        </div>
+                    </div>
+                    <div class="metric-stats">
+                        <div class="stat-row">
+                            <span class="stat-name">Accuracy</span>
+                            <span class="stat-num highlight">80.33%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Precision</span>
+                            <span class="stat-num">75.61%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Recall</span>
+                            <span class="stat-num">93.94%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">F1-Score</span>
+                            <span class="stat-num">0.8378</span>
+                        </div>
+                    </div>
+                    <div class="dataset-meta-tag">
+                        Dataset: 303 records &bull; Test Set: 61 samples
+                    </div>
+                </div>
+
+                <!-- Kidney Disease Card -->
+                <div class="metric-card">
+                    <div class="metric-card-header">
+                        <span class="metric-icon">🫘</span>
+                        <div>
+                            <h3>Chronic Kidney Disease</h3>
+                            <span class="algo-pill">Random Forest Classifier</span>
+                        </div>
+                    </div>
+                    <div class="metric-stats">
+                        <div class="stat-row">
+                            <span class="stat-name">Accuracy</span>
+                            <span class="stat-num highlight">100.00%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Precision</span>
+                            <span class="stat-num">100.00%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Recall</span>
+                            <span class="stat-num">100.00%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">F1-Score</span>
+                            <span class="stat-num">1.0000</span>
+                        </div>
+                    </div>
+                    <div class="dataset-meta-tag">
+                        Dataset: 400 records &bull; Test Set: 80 samples
+                    </div>
+                </div>
+
+                <!-- Liver Disease Card -->
+                <div class="metric-card">
+                    <div class="metric-card-header">
+                        <span class="metric-icon">🫀</span>
+                        <div>
+                            <h3>Liver Disease Model</h3>
+                            <span class="algo-pill">Logistic Regression (balanced)</span>
+                        </div>
+                    </div>
+                    <div class="metric-stats">
+                        <div class="stat-row">
+                            <span class="stat-name">Accuracy</span>
+                            <span class="stat-num highlight">73.50%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Precision</span>
+                            <span class="stat-num">91.94%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">Recall</span>
+                            <span class="stat-num">68.67%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-name">F1-Score</span>
+                            <span class="stat-num">0.7862</span>
+                        </div>
+                    </div>
+                    <div class="dataset-meta-tag">
+                        Dataset: 583 records &bull; Test Set: 117 samples
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Overview Section -->
+        <section id="overview-section" class="section-container">
+            <div class="section-header">
+                <h2>Project Overview &amp; Architecture</h2>
+                <p>End-to-end clinical risk prediction system built with production-grade engineering principles.</p>
+            </div>
+
+            <div class="overview-grid">
+                <div class="overview-box">
+                    <div class="overview-badge">PROBLEM</div>
+                    <h3>Complex Multi-Parameter Clinical Diagnosis</h3>
+                    <p>Healthcare datasets contain diverse clinical parameters spanning biochemical markers, metabolic labs, and physiological vitals that can be complex to synthesize manually in fast-paced clinical or triage settings.</p>
+                </div>
+
+                <div class="overview-box">
+                    <div class="overview-badge">SOLUTION</div>
+                    <h3>Unified Multi-Disease ML Interface</h3>
+                    <p>This project provides a single, intuitive web interface connected to four independent machine-learning classification pipelines, each calibrated with disease-specific data cleaning and preprocessing.</p>
+                </div>
+
+                <div class="overview-box full-width">
+                    <div class="overview-badge">HOW IT WORKS</div>
+                    <h3>End-to-End Prediction Pipeline</h3>
+                    <div class="workflow-steps">
+                        <div class="step-card">
+                            <span class="step-num">1</span>
+                            <h4>Real Healthcare CSVs</h4>
+                            <p>Trained on 4 validated open healthcare datasets with rigorous data cleaning.</p>
+                        </div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-card">
+                            <span class="step-num">2</span>
+                            <h4>Preprocessing Pipeline</h4>
+                            <p>Missing value imputation, categorical encoding, and standard scaling.</p>
+                        </div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-card">
+                            <span class="step-num">3</span>
+                            <h4>ML Classifier</h4>
+                            <p>Trained Scikit-Learn models generate binary classifications and risk probabilities.</p>
+                        </div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-card">
+                            <span class="step-num">4</span>
+                            <h4>Flask REST API</h4>
+                            <p>Lightweight backend validates inputs, loads pickled artifacts, and formats JSON.</p>
+                        </div>
+                        <div class="step-arrow">&rarr;</div>
+                        <div class="step-card">
+                            <span class="step-num">5</span>
+                            <h4>Interactive Web UI</h4>
+                            <p>Instant risk evaluation with personalized reporting and clear medical disclaimers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actual Dataset Statistics Table -->
+            <div class="dataset-stats-card">
+                <h3>Verified Real Dataset Statistics</h3>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Disease Module</th>
+                                <th>Dataset File</th>
+                                <th>Total Records</th>
+                                <th>Features</th>
+                                <th>Target Column</th>
+                                <th>Class Distribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Diabetes</strong></td>
+                                <td><code>diabetes.CSV</code></td>
+                                <td>768</td>
+                                <td>8 clinical features</td>
+                                <td><code>Outcome</code></td>
+                                <td>500 Non-diabetic (0) / 268 Diabetic (1)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Heart Disease</strong></td>
+                                <td><code>heart.csv</code></td>
+                                <td>303</td>
+                                <td>13 clinical features</td>
+                                <td><code>target</code></td>
+                                <td>138 Low Risk (0) / 165 High Risk (1)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chronic Kidney Disease</strong></td>
+                                <td><code>kidney_disease.csv</code></td>
+                                <td>400</td>
+                                <td>24 features (14 num, 10 cat)</td>
+                                <td><code>classification</code></td>
+                                <td>150 Not CKD (0) / 250 CKD (1)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Liver Disease</strong></td>
+                                <td><code>indian_liver_patient.csv</code></td>
+                                <td>583</td>
+                                <td>10 features (9 num, 1 cat)</td>
+                                <td><code>Dataset</code></td>
+                                <td>167 Non-Liver (0) / 416 Liver Patient (1)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Limitations Box -->
+            <div class="limitations-box">
+                <h4>System Scope &amp; Known Limitations</h4>
+                <ul>
+                    <li><strong>Dataset Scale:</strong> Datasets range from 303 to 768 patient records; while clinically valid, broader multi-center cohorts enhance generalization.</li>
+                    <li><strong>Educational Scope:</strong> The models identify statistical correlations within training distributions and are not validated for standalone clinical diagnosis.</li>
+                    <li><strong>No Longitudinal Data:</strong> Predictions reflect cross-sectional snapshot values rather than multi-visit trajectory analysis.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Technology Stack Section -->
+        <section id="tech-section" class="section-container">
+            <div class="section-header">
+                <h2>Technology Stack</h2>
+                <p>Engineered with lightweight, reliable, and production-ready tools.</p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-badge">Frontend</div>
+                    <h3>Client Interface</h3>
+                    <ul class="tech-list">
+                        <li><strong>HTML5:</strong> Semantic and accessible structure</li>
+                        <li><strong>CSS3:</strong> Custom responsive design system with fluid typography and dark accents</li>
+                        <li><strong>Vanilla JavaScript:</strong> Asynchronous fetch requests, dynamic DOM rendering, client-side validation</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-badge">Backend</div>
+                    <h3>Server &amp; API</h3>
+                    <ul class="tech-list">
+                        <li><strong>Python 3.11:</strong> Core backend programming language</li>
+                        <li><strong>Flask 3.1:</strong> Lightweight WSGI application framework</li>
+                        <li><strong>REST API:</strong> Validated endpoints for predictions, health check, and metadata</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-badge">Machine Learning</div>
+                    <h3>Data &amp; Modeling</h3>
+                    <ul class="tech-list">
+                        <li><strong>Scikit-Learn:</strong> Random Forest and Logistic Regression classifiers</li>
+                        <li><strong>Pandas &amp; NumPy:</strong> Data ingestion, cleaning, and array manipulation</li>
+                        <li><strong>Joblib:</strong> Model serialization and persistent pipeline loading</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-badge">Deployment</div>
+                    <h3>Infrastructure</h3>
+                    <ul class="tech-list">
+                        <li><strong>Gunicorn:</strong> Production WSGI HTTP server</li>
+                        <li><strong>Procfile:</strong> Standard web service specification</li>
+                        <li><strong>Render Ready:</strong> Configured for zero-config PaaS cloud hosting</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comprehensive Medical Disclaimer Section -->
+        <section class="disclaimer-section">
+            <div class="disclaimer-card">
+                <div class="disclaimer-icon">⚠️</div>
+                <div class="disclaimer-content">
+                    <h3>Official Medical Disclaimer</h3>
+                    <p class="disclaimer-text">
+                        "This application provides machine-learning-based risk estimates for educational and demonstration purposes only. It is not a medical diagnosis and should not be used as a substitute for examination, diagnosis, or treatment by a qualified healthcare professional."
+                    </p>
+                    <p class="disclaimer-subtext">
+                        Patients should always consult with a licensed physician or specialist before making any medical decisions or modifying treatment plans.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-logo">⚕️ HealthRisk AI</span>
+                <p>Healthcare Patient Risk Prediction &bull; Machine Learning Project</p>
+            </div>
+            <div class="footer-copy">
+                &copy; Healthcare Patient Risk Prediction Project &bull; Built with Python, Scikit-Learn &amp; Flask
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

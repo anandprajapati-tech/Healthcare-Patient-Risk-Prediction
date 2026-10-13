@@ -1,0 +1,227 @@
+{
+  "diabetes": {
+    "disease_name": "Diabetes",
+    "dataset_file": "diabetes.CSV",
+    "total_records": 768,
+    "train_records": 614,
+    "test_records": 154,
+    "num_features": 8,
+    "target_column": "Outcome",
+    "target_classes": {
+      "0": "Low / Normal Risk",
+      "1": "Elevated Risk for Diabetes"
+    },
+    "algorithm": "Random Forest Classifier",
+    "metrics": {
+      "accuracy": 0.7403,
+      "precision": 0.6667,
+      "recall": 0.5185,
+      "f1_score": 0.5833,
+      "confusion_matrix": [
+        [
+          86,
+          14
+        ],
+        [
+          26,
+          28
+        ]
+      ]
+    },
+    "features": [
+      "Pregnancies",
+      "Glucose",
+      "BloodPressure",
+      "SkinThickness",
+      "Insulin",
+      "BMI",
+      "DiabetesPedigreeFunction",
+      "Age"
+    ]
+  },
+  "heart": {
+    "disease_name": "Heart Disease",
+    "dataset_file": "heart.csv",
+    "total_records": 303,
+    "train_records": 242,
+    "test_records": 61,
+    "num_features": 13,
+    "target_column": "target",
+    "target_classes": {
+      "0": "Low / Normal Risk",
+      "1": "Elevated Risk for Heart Disease"
+    },
+    "algorithm": "Random Forest Classifier",
+    "metrics": {
+      "accuracy": 0.8033,
+      "precision": 0.7561,
+      "recall": 0.9394,
+      "f1_score": 0.8378,
+      "confusion_matrix": [
+        [
+          18,
+          10
+        ],
+        [
+          2,
+          31
+        ]
+      ]
+    },
+    "features": [
+      "age",
+      "sex",
+      "cp",
+      "trestbps",
+      "chol",
+      "fbs",
+      "restecg",
+      "thalach",
+      "exang",
+      "oldpeak",
+      "slope",
+      "ca",
+      "thal"
+    ]
+  },
+  "kidney": {
+    "disease_name": "Chronic Kidney Disease",
+    "dataset_file": "kidney_disease.csv",
+    "total_records": 400,
+    "train_records": 320,
+    "test_records": 80,
+    "num_features": 24,
+    "numerical_features": [
+      "age",
+      "bp",
+      "sg",
+      "al",
+      "su",
+      "bgr",
+      "bu",
+      "sc",
+      "sod",
+      "pot",
+      "hemo",
+      "pcv",
+      "wc",
+      "rc"
+    ],
+    "categorical_features": [
+      "rbc",
+      "pc",
+      "pcc",
+      "ba",
+      "htn",
+      "dm",
+      "cad",
+      "appet",
+      "pe",
+      "ane"
+    ],
+    "target_column": "classification",
+    "target_classes": {
+      "0": "No Kidney Disease Detected",
+      "1": "Elevated Risk for CKD"
+    },
+    "algorithm": "Random Forest Classifier",
+    "metrics": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "confusion_matrix": [
+        [
+          30,
+          0
+        ],
+        [
+          0,
+          50
+        ]
+      ]
+    },
+    "features": [
+      "age",
+      "bp",
+      "sg",
+      "al",
+      "su",
+      "bgr",
+      "bu",
+      "sc",
+      "sod",
+      "pot",
+      "hemo",
+      "pcv",
+      "wc",
+      "rc",
+      "rbc",
+      "pc",
+      "pcc",
+      "ba",
+      "htn",
+      "dm",
+      "cad",
+      "appet",
+      "pe",
+      "ane"
+    ]
+  },
+  "liver": {
+    "disease_name": "Liver Disease",
+    "dataset_file": "indian_liver_patient.csv",
+    "total_records": 583,
+    "train_records": 466,
+    "test_records": 117,
+    "num_features": 10,
+    "numerical_features": [
+      "Age",
+      "Total_Bilirubin",
+      "Direct_Bilirubin",
+      "Alkaline_Phosphotase",
+      "Alamine_Aminotransferase",
+      "Aspartate_Aminotransferase",
+      "Total_Protiens",
+      "Albumin",
+      "Albumin_and_Globulin_Ratio"
+    ],
+    "categorical_features": [
+      "Gender"
+    ],
+    "target_column": "Dataset",
+    "target_classes": {
+      "0": "Low / Normal Risk",
+      "1": "Elevated Risk for Liver Disease"
+    },
+    "algorithm": "Logistic Regression (balanced)",
+    "metrics": {
+      "accuracy": 0.735,
+      "precision": 0.9194,
+      "recall": 0.6867,
+      "f1_score": 0.7862,
+      "confusion_matrix": [
+        [
+          29,
+          5
+        ],
+        [
+          26,
+          57
+        ]
+      ]
+    },
+    "features": [
+      "Age",
+      "Total_Bilirubin",
+      "Direct_Bilirubin",
+      "Alkaline_Phosphotase",
+      "Alamine_Aminotransferase",
+      "Aspartate_Aminotransferase",
+      "Total_Protiens",
+      "Albumin",
+      "Albumin_and_Globulin_Ratio",
+      "Gender"
+    ]
+  }
+}
